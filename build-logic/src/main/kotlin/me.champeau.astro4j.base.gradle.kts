@@ -127,12 +127,14 @@ publishing {
 
 signing {
     setRequired {
-        gradle.taskGraph.allTasks.any {
+        !project.hasProperty("skipSigning") && gradle.taskGraph.allTasks.any {
             it.name.startsWith("publish")
         }
     }
     publishing.publications.configureEach {
-        sign(this)
+        if (!project.hasProperty("skipSigning")) {
+            sign(this)
+        }
         this as MavenPublication
         pom {
             name.set(project.name)
